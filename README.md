@@ -2,7 +2,7 @@
 
 Based off of OpenSimulator (OpenSim for short) but modified for the Canadian Grid
 
-Will be rebased to use DotNet 9 soon
+Working for dotnet 9
 
 # More Information on OpenSim
 
