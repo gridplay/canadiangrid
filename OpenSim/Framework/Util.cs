@@ -2452,7 +2452,7 @@ namespace OpenSim.Framework
 
             memory.Position = 0;
             using GZipStream decompressor = new(memory, CompressionMode.Decompress);
-            decompressor.Read(buffer, 0, buffer.Length);
+            decompressor.ReadExactly(buffer, 0, buffer.Length);
 
             return Util.UTF8.GetString(buffer);
         }
@@ -2755,7 +2755,7 @@ namespace OpenSim.Framework
         public static OSDMap GetOSDMap(Stream stream, int length)
         {
             byte[] data = new byte[length];
-            stream.Read(data, 0, length);
+            stream.ReadExactly(data, 0, length);
             string strdata = Util.UTF8.GetString(data);
             OSDMap args;
             OSD buffer;
