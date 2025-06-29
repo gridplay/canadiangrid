@@ -217,7 +217,8 @@ namespace OpenSim.Framework.Servers.HttpServer
         {
             try
             {
-                m_cert = X509CertificateLoader.LoadCertificateFromFile(CPath);
+                //m_cert = X509CertificateLoader.LoadCertificateFromFile(CPath);
+                m_cert = new X509Certificate2(CPath, CPass);
                 X509Extension ext = m_cert.Extensions["2.5.29.17"];
                 if(ext != null)
                 {
