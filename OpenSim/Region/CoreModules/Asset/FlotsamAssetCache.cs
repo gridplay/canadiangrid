@@ -1017,8 +1017,13 @@ namespace OpenSim.Region.CoreModules.Asset
 
                     using (Stream stream = File.Open(tempname, FileMode.Create))
                     {
-                        BinaryFormatter bformatter = new();
-                        bformatter.Serialize(stream, asset);
+                        // Deprecated: BinaryFormatter is not secure and should not be used.
+                        //BinaryFormatter bformatter = new();
+                        //bformatter.Serialize(stream, asset);
+
+                        var json = JsonSerializer.Serialize(asset);
+                        stream.WriteAsync(JsonSerializer.SerializeToUtf8Bytes(asset));
+
                         stream.Flush();
                     }
                     m_lastFileAccessTimeChange?.Add(filename, 900000);
