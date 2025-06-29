@@ -537,10 +537,10 @@ namespace OpenSim.Region.CoreModules.Asset
                     return null;
 
                 // Deprecated: BinaryFormatter is not secure and should not be used.
-                //BinaryFormatter bformatter = new();
-                //asset = (AssetBase)bformatter.Deserialize(stream);
-                using var reader = new BinaryReader(stream);
-                asset = Deserialize<AssetBase>(reader.ReadBytes((int)stream.Length));
+                BinaryFormatter bformatter = new();
+                asset = (AssetBase)bformatter.Deserialize(stream);
+                //using var reader = new BinaryReader(stream);
+                //asset = Deserialize<AssetBase>(reader.ReadBytes((int)stream.Length));
 
 
                 m_DiskHits++;
@@ -1027,9 +1027,9 @@ namespace OpenSim.Region.CoreModules.Asset
                     using (Stream stream = File.Open(tempname, FileMode.Create))
                     {
                         // Deprecated: BinaryFormatter is not secure and should not be used.
-                        //BinaryFormatter bformatter = new();
-                        //bformatter.Serialize(stream, asset);
-                        using (var writer = new BinaryWriter(stream))
+                        BinaryFormatter bformatter = new();
+                        bformatter.Serialize(stream, asset);
+                        /*using (var writer = new BinaryWriter(stream))
                         {
                             writer.Write(asset.ID);
                             writer.Write((int)asset.Type);
@@ -1039,7 +1039,7 @@ namespace OpenSim.Region.CoreModules.Asset
                             writer.Write(asset.Description ?? string.Empty);
                             writer.Write(asset.Local ? (byte)1 : (byte)0);
                             writer.Write((byte)asset.Flags);
-                        }
+                        }*/
                         stream.Flush();
                     }
                     m_lastFileAccessTimeChange?.Add(filename, 900000);
