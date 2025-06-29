@@ -26,7 +26,6 @@
  */
 
 using log4net;
-using MessagePack;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -501,6 +500,15 @@ namespace OpenSim.Region.CoreModules.Asset
         {
             return m_MemoryCache.Contains(id);
         }
+        public static T Deserialize<T>(byte[] bytes) where T : new()
+        {
+            using var stream = new MemoryStream(bytes);
+            using var reader = new BinaryReader(stream);
+
+            var obj = new T();
+            // Populate fields here (reflection or known structure)
+            return obj;
+        }
 
         /// <summary>
         /// Try to get an asset from the file cache.
@@ -531,8 +539,8 @@ namespace OpenSim.Region.CoreModules.Asset
                 // Deprecated: BinaryFormatter is not secure and should not be used.
                 //BinaryFormatter bformatter = new();
                 //asset = (AssetBase)bformatter.Deserialize(stream);
-
-                asset = MessagePackSerializer.Deserialize<AssetBase>(stream);
+                using var reader = new BinaryReader(stream);
+                asset = Deserialize<AssetBase>(reader.ReadBytes((int)stream.Length));
 
 
                 m_DiskHits++;
@@ -558,7 +566,7 @@ namespace OpenSim.Region.CoreModules.Asset
                 m_log.Warn($"[FLOTSAM ASSET CACHE]: Failed to get file {filename} for asset {id}: {e.Message}");
             }
 
-        return asset;
+            return asset;
         }
 
         private bool CheckFromFileCache(string id)
@@ -1021,10 +1029,17 @@ namespace OpenSim.Region.CoreModules.Asset
                         // Deprecated: BinaryFormatter is not secure and should not be used.
                         //BinaryFormatter bformatter = new();
                         //bformatter.Serialize(stream, asset);
-
-                        byte[] bytes = MessagePackSerializer.Serialize(asset);
-                        stream.WriteAsync(bytes);
-
+                        using (var writer = new BinaryWriter(stream))
+                        {
+                            writer.Write(asset.ID);
+                            writer.Write((int)asset.Type);
+                            writer.Write(asset.Data.Length);
+                            writer.Write(asset.Data);
+                            writer.Write(asset.Name ?? string.Empty);
+                            writer.Write(asset.Description ?? string.Empty);
+                            writer.Write(asset.Local ? (byte)1 : (byte)0);
+                            writer.Write((byte)asset.Flags);
+                        }
                         stream.Flush();
                     }
                     m_lastFileAccessTimeChange?.Add(filename, 900000);
