@@ -29,10 +29,11 @@ namespace OpenSim
 {
     public class VersionInfo
     {
-        public const string VersionNumber = "0.9.3.1";
-        public const string AssemblyVersionNumber = "0.9.3.1";
+        public const string VersionNumber = "0.0.2";
+        public const string VersionName = "CanadaDay";
+        public const string AssemblyVersionNumber = "0.0.2";
 
-        public const Flavour VERSION_FLAVOUR = Flavour.Dev;
+        public const Flavour VERSION_FLAVOUR = Flavour.RC1;
 
         public enum Flavour
         {
@@ -48,16 +49,16 @@ namespace OpenSim
 
         public static string Version
         {
-            get { return GetVersionString(VersionNumber, VERSION_FLAVOUR); }
+            get { return GetVersionString(VersionNumber, VersionName, VERSION_FLAVOUR); }
         }
 
-        public static string GetVersionString(string versionNumber, Flavour flavour)
+        public static string GetVersionString(string versionNumber, string versionName, Flavour flavour)
         {
-            string versionString = $"OpenSim {versionNumber} Nessie {flavour}";
+            string versionString = $"CanadianGrid {versionNumber} {versionName} {flavour}";
             return versionString.PadRight(VERSIONINFO_VERSION_LENGTH);
         }
 
-        public const int VERSIONINFO_VERSION_LENGTH = 27;
+        public const int VERSIONINFO_VERSION_LENGTH = 45;
 
         /// <value>
         /// This is the external interface version.  It is separate from the OpenSimulator project version.
@@ -88,9 +89,9 @@ namespace OpenSim
         /// "SIMULATION/0.1"
         ///   - this is an older teleport protocol used in OpenSimulator 0.7.5 and before.
         /// </remarks>
-        public readonly static float SimulationServiceVersionAcceptedMin = 0.3f;
+        public readonly static float SimulationServiceVersionAcceptedMin = 0.7f;
         public readonly static float SimulationServiceVersionAcceptedMax = 0.8f;
-        public readonly static float SimulationServiceVersionSupportedMin = 0.3f;
+        public readonly static float SimulationServiceVersionSupportedMin = 0.7f;
         public readonly static float SimulationServiceVersionSupportedMax = 0.8f;
     }
 }
