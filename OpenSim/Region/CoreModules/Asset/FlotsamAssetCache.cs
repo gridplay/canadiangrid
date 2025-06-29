@@ -25,17 +25,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
-using System.Timers;
 using log4net;
-using Nini.Config;
 using Mono.Addins;
+using Nini.Config;
 using OpenMetaverse;
 using OpenSim.Framework;
 using OpenSim.Framework.Monitoring;
@@ -43,7 +35,16 @@ using OpenSim.Region.Framework.Interfaces;
 using OpenSim.Region.Framework.Scenes;
 using OpenSim.Server.Base;
 using OpenSim.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Timers;
 
 
 namespace OpenSim.Region.CoreModules.Asset
@@ -526,8 +527,12 @@ namespace OpenSim.Region.CoreModules.Asset
                 if (stream.Length == 0) // Empty file will trigger exception below
                     return null;
 
-                BinaryFormatter bformatter = new();
-                asset = (AssetBase)bformatter.Deserialize(stream);
+                // Deprecated: BinaryFormatter is not secure and should not be used.
+                //BinaryFormatter bformatter = new();
+                //asset = (AssetBase)bformatter.Deserialize(stream);
+
+                var resultBytes = JsonSerializer.SerializeToUtf8Bytes(stream, new JsonSerializerOptions { WriteIndented = false });
+                asset = JsonSerializer.Deserialize<AssetBase>(new ReadOnlySpan<byte>(resultBytes));
 
                 m_DiskHits++;
             }
