@@ -25,14 +25,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Xml;
 using log4net;
 using Nini.Config;
 using OpenSim.Framework;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace OpenSim.ApplicationPlugins.LoadRegions
 {
@@ -47,6 +49,20 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
             m_configSource = configSource;
         }
 
+        // for loading web XML based region data
+        private async static Task<string> HttpGetAsync(string uri)
+        {
+            string content = null;
+
+            var client = new HttpClient();
+            var response = await client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                content = await response.Content.ReadAsStringAsync();
+            }
+
+            return content;
+        }
         public RegionInfo[] LoadRegions()
         {
             int tries = 3;
@@ -74,15 +90,22 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                     {
                         RegionInfo[] regionInfos = Array.Empty<RegionInfo>();
                         int regionCount = 0;
-                        HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-                        webRequest.Timeout = 30000; //30 Second Timeout
-                        m_log.DebugFormat("[WEBLOADER]: Sending download request to {0}", url);
+
+                        // old deprecated way to load web XML
+                        //HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+                        //webRequest.Timeout = 30000; //30 Second Timeout
+                        //m_log.DebugFormat("[WEBLOADER]: Sending download request to {0}", url);
 
                         try
                         {
                             string xmlSource = String.Empty;
                             m_log.Debug("[WEBLOADER]: Downloading region information...");
-                            using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
+
+                            // new way to get web xml based region data
+                            xmlSource = HttpGetAsync(url).Result;
+
+                            // old deprecated way to load web XML
+                            /*using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
                             using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
                             {
                                 string tempStr;
@@ -90,7 +113,7 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                                 {
                                     xmlSource += tempStr;
                                 }
-                            }
+                            }*/
 
                             m_log.Debug("[WEBLOADER]: Done downloading region information from server. Total Bytes: " +
                                         xmlSource.Length);
