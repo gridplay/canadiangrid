@@ -26,6 +26,7 @@
  */
 
 using log4net;
+using MessagePack;
 using Mono.Addins;
 using Nini.Config;
 using OpenMetaverse;
@@ -531,8 +532,8 @@ namespace OpenSim.Region.CoreModules.Asset
                 //BinaryFormatter bformatter = new();
                 //asset = (AssetBase)bformatter.Deserialize(stream);
 
-                var resultBytes = JsonSerializer.SerializeToUtf8Bytes(stream, new JsonSerializerOptions { WriteIndented = false });
-                asset = JsonSerializer.Deserialize<AssetBase>(new ReadOnlySpan<byte>(resultBytes));
+                asset = MessagePackSerializer.Deserialize<AssetBase>(stream);
+
 
                 m_DiskHits++;
             }
@@ -1021,8 +1022,8 @@ namespace OpenSim.Region.CoreModules.Asset
                         //BinaryFormatter bformatter = new();
                         //bformatter.Serialize(stream, asset);
 
-                        var json = JsonSerializer.Serialize(asset);
-                        stream.WriteAsync(JsonSerializer.SerializeToUtf8Bytes(asset));
+                        byte[] bytes = MessagePackSerializer.Serialize(asset);
+                        stream.WriteAsync(bytes);
 
                         stream.Flush();
                     }
