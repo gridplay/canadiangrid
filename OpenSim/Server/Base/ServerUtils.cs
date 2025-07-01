@@ -287,8 +287,7 @@ namespace OpenSim.Server.Base
                             T plug = null;
                             try
                             {
-                                plug = (T)Activator.CreateInstance(pluginType,
-                                        args);
+                                plug = (T)Activator.CreateInstance(pluginType, args);
                             }
                             catch (Exception e)
                             {
