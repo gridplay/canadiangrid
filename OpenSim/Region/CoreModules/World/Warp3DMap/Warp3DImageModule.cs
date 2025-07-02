@@ -25,6 +25,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CSJ2K;
+using log4net;
+using Mono.Addins;
+using Nini.Config;
+using OpenMetaverse;
+using OpenMetaverse.Assets;
+using OpenMetaverse.Imaging;
+using OpenMetaverse.Rendering;
+using OpenMetaverse.StructuredData;
+using OpenSim.Framework;
+using OpenSim.Region.Framework.Interfaces;
+using OpenSim.Region.Framework.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -32,23 +44,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Runtime;
-
-using CSJ2K;
-using Nini.Config;
-using log4net;
+using System.Text.Json;
 using Warp3D;
-using Mono.Addins;
-
-using OpenSim.Framework;
-using OpenSim.Region.Framework.Interfaces;
-using OpenSim.Region.Framework.Scenes;
-
-using OpenMetaverse;
-using OpenMetaverse.Assets;
-using OpenMetaverse.Imaging;
-using OpenMetaverse.Rendering;
-using OpenMetaverse.StructuredData;
-
 using WarpRenderer = Warp3D.Warp3D;
 
 namespace OpenSim.Region.CoreModules.World.Warp3DMap
@@ -395,7 +392,9 @@ namespace OpenSim.Region.CoreModules.World.Warp3DMap
                     regionInfo.TerrainTexture3,
                     regionInfo.TerrainTexture4,
             };
-            if (regionInfo.TerrainPBR1 != null)
+
+            // lets get the PBR textures if they are set
+            if (regionInfo.TerrainPBR1.IsNotZero() && regionInfo.TerrainPBR2.IsNotZero() && regionInfo.TerrainPBR3.IsNotZero() && regionInfo.TerrainPBR4.IsNotZero())
             {
                 textureIDs = new UUID[4]
                 {
@@ -404,6 +403,99 @@ namespace OpenSim.Region.CoreModules.World.Warp3DMap
                     regionInfo.TerrainPBR3,
                     regionInfo.TerrainPBR4,
                 };
+
+                AssetBase mat1 = m_scene.AssetService.Get(regionInfo.TerrainPBR1.ToString());
+                if (mat1 is not null && mat1.Data is not null)
+                {
+                    OSD osd = OSDParser.DeserializeLLSDBinary(mat1.Data);
+                    if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
+                    {
+                        if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
+                        {
+                            string innerJson = dataOSD.AsString(); // Access the value safely
+                            using (JsonDocument doc = JsonDocument.Parse(innerJson))
+                            {
+                                JsonElement root = doc.RootElement;
+
+                                string uuid = root
+                                    .GetProperty("images")[0]
+                                    .GetProperty("uri")
+                                    .GetString();
+                                textureIDs[0] = new UUID(uuid);
+                            }
+                        }
+                    }
+                }
+
+                AssetBase mat2 = m_scene.AssetService.Get(regionInfo.TerrainPBR2.ToString());
+                if (mat2 is not null && mat2.Data is not null)
+                {
+                    OSD osd = OSDParser.DeserializeLLSDBinary(mat2.Data);
+                    if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
+                    {
+                        if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
+                        {
+                            string innerJson = dataOSD.AsString(); // Access the value safely
+                            using (JsonDocument doc = JsonDocument.Parse(innerJson))
+                            {
+                                JsonElement root = doc.RootElement;
+
+                                string uuid = root
+                                    .GetProperty("images")[0]
+                                    .GetProperty("uri")
+                                    .GetString();
+                                textureIDs[1] = new UUID(uuid);
+                            }
+                        }
+                    }
+                }
+
+                AssetBase mat3 = m_scene.AssetService.Get(regionInfo.TerrainPBR3.ToString());
+                if (mat3 is not null && mat3.Data is not null)
+                {
+                    OSD osd = OSDParser.DeserializeLLSDBinary(mat3.Data);
+                    if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
+                    {
+                        if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
+                        {
+                            string innerJson = dataOSD.AsString(); // Access the value safely
+                            using (JsonDocument doc = JsonDocument.Parse(innerJson))
+                            {
+                                JsonElement root = doc.RootElement;
+
+                                string uuid = root
+                                    .GetProperty("images")[0]
+                                    .GetProperty("uri")
+                                    .GetString();
+                                textureIDs[2] = new UUID(uuid);
+                            }
+
+                        }
+                    }
+                }
+
+                AssetBase mat4 = m_scene.AssetService.Get(regionInfo.TerrainPBR4.ToString());
+                if (mat4 is not null && mat4.Data is not null)
+                {
+                    OSD osd = OSDParser.DeserializeLLSDBinary(mat4.Data);
+                    if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
+                    {
+                        if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
+                        {
+                            string innerJson = dataOSD.AsString(); // Access the value safely
+                            using (JsonDocument doc = JsonDocument.Parse(innerJson))
+                            {
+                                JsonElement root = doc.RootElement;
+
+                                string uuid = root
+                                    .GetProperty("images")[0]
+                                    .GetProperty("uri")
+                                    .GetString();
+                                textureIDs[3] = new UUID(uuid);
+                            }
+                        }
+                    }
+                }
             }
             float[] startHeights = new float[4]
             {

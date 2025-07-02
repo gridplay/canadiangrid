@@ -36,6 +36,7 @@
 */*/*/*/*/*/*/bin
 .vs/
 addon-modules/
+bin/
 bin/Debug/*.dll
 bin/*.dll.mdb
 bin/*.db
