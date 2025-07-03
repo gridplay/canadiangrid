@@ -29,9 +29,9 @@ namespace OpenSim
 {
     public class VersionInfo
     {
-        public const string VersionNumber = "0.0.2";
-        public const string VersionName = "CanadaDay";
-        public const string AssemblyVersionNumber = "0.0.2";
+        public const string VersionNumber = "0.0.3";
+        public const string VersionName = "WarpIt";
+        public const string AssemblyVersionNumber = "0.0.3";
 
         public const Flavour VERSION_FLAVOUR = Flavour.RC1;
 
