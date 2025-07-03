@@ -407,7 +407,7 @@ namespace OpenSim.Region.CoreModules.World.Warp3DMap
                 AssetBase mat1 = m_scene.AssetService.Get(regionInfo.TerrainPBR1.ToString());
                 if (mat1 is not null && mat1.Data is not null)
                 {
-                    OSD osd = OSDParser.DeserializeLLSDBinary(mat1.Data);
+                    OSD osd = OSDParser.DeserializeLLSDXml(mat1.Data);
                     if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
                     {
                         if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
@@ -430,7 +430,7 @@ namespace OpenSim.Region.CoreModules.World.Warp3DMap
                 AssetBase mat2 = m_scene.AssetService.Get(regionInfo.TerrainPBR2.ToString());
                 if (mat2 is not null && mat2.Data is not null)
                 {
-                    OSD osd = OSDParser.DeserializeLLSDBinary(mat2.Data);
+                    OSD osd = OSDParser.DeserializeLLSDXml(mat2.Data);
                     if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
                     {
                         if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
@@ -453,7 +453,7 @@ namespace OpenSim.Region.CoreModules.World.Warp3DMap
                 AssetBase mat3 = m_scene.AssetService.Get(regionInfo.TerrainPBR3.ToString());
                 if (mat3 is not null && mat3.Data is not null)
                 {
-                    OSD osd = OSDParser.DeserializeLLSDBinary(mat3.Data);
+                    OSD osd = OSDParser.DeserializeLLSDXml(mat3.Data);
                     if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
                     {
                         if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
@@ -477,7 +477,7 @@ namespace OpenSim.Region.CoreModules.World.Warp3DMap
                 AssetBase mat4 = m_scene.AssetService.Get(regionInfo.TerrainPBR4.ToString());
                 if (mat4 is not null && mat4.Data is not null)
                 {
-                    OSD osd = OSDParser.DeserializeLLSDBinary(mat4.Data);
+                    OSD osd = OSDParser.DeserializeLLSDXml(mat4.Data);
                     if (osd is OSDMap matMap) // Ensure the OSD object is an OSDMap before accessing its members
                     {
                         if (matMap.TryGetValue("data", out OSD dataOSD)) // Use TryGetValue to safely access the key
