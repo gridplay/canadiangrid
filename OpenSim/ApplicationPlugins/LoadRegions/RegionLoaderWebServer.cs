@@ -118,12 +118,10 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                                         xmlSource.Length);
                             XmlDocument xmlDoc = new XmlDocument();
                             xmlDoc.LoadXml(xmlSource);
-                            m_log.Debug(xmlDoc.FirstChild.Name);
                             if (xmlDoc.FirstChild.Name == "Nini")
                             {
                                 regionCount = xmlDoc.FirstChild.ChildNodes.Count;
 
-                                m_log.Debug(regionCount);
                                 if (regionCount > 0)
                                 {
                                     regionInfos = new RegionInfo[regionCount];
