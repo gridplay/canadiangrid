@@ -138,13 +138,13 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                         }
                         catch (WebException ex)
                         {
-                            if (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.NotFound)
+                            /*if (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.NotFound)
                             {
                                 if (!allowRegionless)
                                     throw;
                             }
                             else
-                                throw;
+                                throw;*/
                         }
 
                         if (regionCount > 0 || allowRegionless)
