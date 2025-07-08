@@ -103,7 +103,6 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
 
                             // new way to get web xml based region data
                             xmlSource = HttpGetAsync(url).Result;
-                            m_log.Debug("[WEBLOADER]: " + xmlSource);
                             // old deprecated way to load web XML
                             /*using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
                             using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
@@ -119,6 +118,7 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                                         xmlSource.Length);
                             XmlDocument xmlDoc = new XmlDocument();
                             xmlDoc.LoadXml(xmlSource);
+                            m_log.Debug(xmlDoc.OuterXml);
                             if (xmlDoc.FirstChild.Name == "Nini")
                             {
                                 regionCount = xmlDoc.FirstChild.ChildNodes.Count;
