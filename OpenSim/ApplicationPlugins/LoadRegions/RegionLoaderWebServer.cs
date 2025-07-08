@@ -96,14 +96,14 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                         //webRequest.Timeout = 30000; //30 Second Timeout
                         //m_log.DebugFormat("[WEBLOADER]: Sending download request to {0}", url);
 
-                        //try
-                        //{
+                        try
+                        {
                             string xmlSource = String.Empty;
                             m_log.Debug("[WEBLOADER]: Downloading region information...");
 
                             // new way to get web xml based region data
                             xmlSource = HttpGetAsync(url).Result;
-
+                            m_log.Debug("[WEBLOADER]: " + xmlSource);
                             // old deprecated way to load web XML
                             /*using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
                             using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
@@ -135,7 +135,7 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                                     }
                                 }
                             }
-                        /*}
+                        }
                         catch (WebException ex)
                         {
                             if (((HttpWebResponse)ex.Response).StatusCode == HttpStatusCode.NotFound)
@@ -145,7 +145,7 @@ namespace OpenSim.ApplicationPlugins.LoadRegions
                             }
                             else
                                 throw;
-                        }*/
+                        }
 
                         if (regionCount > 0 || allowRegionless)
                             return regionInfos;
